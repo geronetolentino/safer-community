@@ -10,9 +10,6 @@ use Response;
 
 use App\Models\User;
 use App\Models\UserInfo;
-use App\Models\AddrBarangay;
-use App\Models\AddrMunicipality;
-use App\Models\AddrProvince;
 
 class AccountController extends Controller
 {

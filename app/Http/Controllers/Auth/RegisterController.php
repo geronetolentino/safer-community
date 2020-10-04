@@ -8,10 +8,9 @@ use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Carbon\Carbon;
 
 use App\Models\User;
-use App\Models\UserInfo;
-use App\Models\Establishment;
 
 class RegisterController extends Controller
 {
@@ -54,16 +53,12 @@ class RegisterController extends Controller
     protected function validator(array $data)
     {
         return Validator::make($data, [
-            'type' => ['required'],
-            'username' => ['required', 'string', 'max:255'],
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
-            'phone_number' => ['required', 'string', 'max:13', 'unique:user_infos'],
             'addr_barangay_id' => ['required'],
-            'addr_municipality_id' => ['required'],
-            'addr_province_id' => ['required'],
-            'addr_region_id' => ['required'],
+            'name' => ['required', 'string', 'max:255'],
+            'birthdate' => ['required', 'string'],
+            'gender' => ['required', 'string'],
+            'phone_number' => ['required', 'string', 'max:13', 'unique:users'],
+            'password' => ['required', 'string', 'min:8', 'confirmed'],
         ]);
     }
 
@@ -75,39 +70,23 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
+        $uid = strtoupper(Str::random(5).'-'.Str::random(5).'-'.Str::random(5).'-'.Str::random(5));
+
         $user = User::create([
-            'type' => $data['type'],
-            'username' => $data['username'],
+            'uid' => $uid,
+            'type' => 'resident',
             'name' => $data['name'],
-            'email' => $data['email'],
+            'birthdate' => $data['birthdate'],
+            'gender' => $data['gender'],
+            'phone_number' => $data['phone_number'],
             'password' => Hash::make($data['password']),
             'addr_barangay_id' => $data['addr_barangay_id'],
-            'addr_municipality_id' => $data['addr_municipality_id'],
-            'addr_province_id' => $data['addr_province_id'],
-            'addr_region_id' => $data['addr_region_id'],
+            'addr_municipality_id' => '015528',
+            'addr_province_id' => '0155',
+            'addr_region_id' => '01',
+            'email_verified_at' => Carbon::now(),
         ]);
-
-        $poi_id = substr(strtoupper(Str::random(5)).'-'.rand().'-'.rand(), 0,30);
-        UserInfo::create([
-            'user_id' => $user->id,
-            'profile_photo' => 'default-avatar.png',
-            'phone_number' => $data['phone_number'],
-            'dob' => null,
-            'poi_id' => $data['type']==4?$poi_id:null,
-        ]);
-
-        if ($data['type'] == 6) {
-            Establishment::create([
-                'user_id' => $user->id,
-                'parent_id' => 0,
-                'name' => $data['name'],
-                'description' => null,
-                'logo' => 'establishment-logo.png',
-                'est_code' => substr($user->id . '-' . rand() . '-' . rand(), 0,30),
-            ]);
-        }
 
         return $user;
-            
     }
 }

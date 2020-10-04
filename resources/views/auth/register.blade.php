@@ -8,21 +8,13 @@
                     <div class="form-content">
                         <h1 class="">Register account</h1>
                         <p class="signup-link">Already have an account? <a href="{{ route('login') }}">Log in</a></p>
-                        <form method="POST" action="{{ route('register') }}">
+                        <form method="POST" action="{{ route('register') }}" autocomplete="off">
                             @csrf
 
-                            <div class="form-group">
-                                <label for="type">Register as:</label>
-                                <select class="custom-select" name="type" id="type">
-                                    <option value="4">Resident</option>
-                                    <option value="6">Establishment/Business</option>
-                                </select>
-                            </div> 
                             <div class="form-group">
                                 <label for="addr_region_id">Region</label>
                                 <select class="custom-select" name="addr_region_id" id="addr_region_id" required="">
                                     <option value="">Select ...</option>
-
                                 </select>
                             </div> 
                             <div class="form-group">
@@ -41,7 +33,6 @@
                                 <label for="addr_barangay_id">Barangay</label>
                                 <select class="custom-select" name="addr_barangay_id" id="addr_barangay_id" required="">
                                     <option value="">Select ...</option>
-
                                 </select>
                             </div> 
                             <div class="form-group">
@@ -53,17 +44,23 @@
                                 </span>
                                 @enderror
                             </div> 
-
                             <div class="form-group">
-                                <label for="email">Email</label>
-                                <input type="text" class="form-control form-control-sm @error('email') is-invalid @enderror max-50" maxlength="50" id="email" name="email" required="" placeholder="Type here..." value="{{ old('email') }}">
-                                @error('email')
+                                <label for="birthdate">Birth Date (YYYY-MM-DD)</label>
+                                <input type="text" class="form-control form-control-sm @error('birthdate') is-invalid @enderror" maxlength="10" id="birthdate" name="birthdate" required="" placeholder="Type here..." value="{{ old('birthdate') }}">
+                                @error('birthdate')
                                 <span class="invalid-feedback" role="alert">
                                     <strong>{{ $message }}</strong>
                                 </span>
                                 @enderror
                             </div> 
-
+                            <div class="form-group">
+                                <label for="gender">Gender</label>
+                                <select class="custom-select" name="gender" id="gender" required="">
+                                    <option value="">Select ...</option>
+                                    <option value="M">Male</option>
+                                    <option value="F">Female</option>
+                                </select>
+                            </div> 
                             <div class="form-group">
                                 <label for="phone_number">Phone Number (09xxxxxxxxx)</label>
                                 <input type="text" class="form-control form-control-sm @error('phone_number') is-invalid @enderror max-11" maxlength="11" id="phone_number" name="phone_number" required="" placeholder="Type here..." value="{{ old('phone_number') }}">
@@ -73,17 +70,6 @@
                                 </span>
                                 @enderror
                             </div> 
-
-                            <div class="form-group">
-                                <label for="username">Username</label>
-                                <input type="text" class="form-control form-control-sm @error('username') is-invalid @enderror max-50" maxlength="50" id="username" name="username" required="" placeholder="Type here..." value="{{ old('username') }}">
-                                @error('username')
-                                <span class="invalid-feedback" role="alert">
-                                    <strong>{{ $message }}</strong>
-                                </span>
-                                @enderror
-                            </div> 
-
                             <div class="form-group">
                                 <label for="password">Password</label>
                                 <input type="password" class="form-control form-control-sm @error('password') is-invalid @enderror max-50" maxlength="50" id="password" name="password" required="" placeholder="Type here...">
@@ -93,12 +79,10 @@
                                 </span>
                                 @enderror
                             </div> 
-
                             <div class="form-group">
                                 <label for="password_confirmation">Confirm Password</label>
                                 <input type="password" class="form-control form-control-sm @error('password_confirmation') is-invalid @enderror max-50" maxlength="50" id="password_confirmation" name="password_confirmation" required="" placeholder="Type here...">
                             </div> 
-                          
                             <div class="form">
                                 <div class="field-wrapper terms_condition">
                                     <div class="n-chk new-checkbox checkbox-outline-primary">
@@ -109,13 +93,13 @@
                                     </div>
                                 </div>
                                 <div class="d-sm-flex justify-content-between">
-                                    <div class="field-wrapper toggle-pass">
+                              {{--       <div class="field-wrapper toggle-pass">
                                         <p class="d-inline-block">Show Password</p>
                                         <label class="switch s-primary">
                                             <input type="checkbox" id="toggle-password" class="d-none">
                                             <span class="slider round"></span>
                                         </label>
-                                    </div>
+                                    </div> --}}
                                     <div class="field-wrapper">
                                         <button type="submit" class="btn btn-primary" value="">Register</button>
                                     </div>
@@ -156,6 +140,11 @@
             }
         });
 
+        var region = '01',
+        province = '0155',
+        city = '015528',
+        selected = '';
+
         regions();
         $("#addr_region_id").on("change", function (e) {
             var code = e.target.value;
@@ -163,13 +152,21 @@
                 url: "{{ route('address.provinces') }}",
                 type: "POST",
                 data: {
-                    code: code,
+                    code: region,
                 },
                 success: function (data) {
                     $("#addr_province_id, #addr_municipality_id, #addr_barangay_id").empty().append('<option value="">Select ...</option>');
                     $.each(data.provinces, function (index, value) {
-                        $("#addr_province_id").append('<option value="' + value.province_code + '">' + value.province_description + "</option>");
+
+                        selected = '';
+                        if (value.province_code == province) {
+                            selected = 'selected';
+                        }
+
+                        $("#addr_province_id").append('<option value="' + value.province_code + '" '+selected+'>' + value.province_description + "</option>");
                     });
+
+                    $("#addr_province_id").trigger('change').attr('disabled','disabled');
                 }
             });
         });
@@ -180,13 +177,22 @@
                 url: "{{ route('address.city-municipalities') }}",
                 type: "POST",
                 data: {
-                    code: code,
+                    code: province,
                 },
                 success: function (data) {
                     $("#addr_municipality_id, #addr_barangay_id").empty().append('<option value="">Select ...</option>');
                     $.each(data.cities_municipalities, function (index, value) {
-                        $("#addr_municipality_id").append('<option value="' + value.city_municipality_code + '">' + value.city_municipality_description + "</option>");
+
+                        selected = '';
+                        if (value.city_municipality_code == city) {
+                            selected = 'selected';
+                        }
+
+                        $("#addr_municipality_id").append('<option value="' + value.city_municipality_code + '" '+selected+'>' + value.city_municipality_description + "</option>");
                     });
+
+                    $("#addr_municipality_id").trigger('change').attr('disabled','disabled');
+
                 }
             });
         });
@@ -197,7 +203,7 @@
                 url: "{{ route('address.barangays') }}",
                 type: "POST",
                 data: {
-                    code: code,
+                    code: city,
                 },
                 success: function (data) {
                     $("#addr_barangay_id").empty().append('<option value="">Select ...</option>');
@@ -217,8 +223,15 @@
                 success: function (data) {
                     $("#addr_region_id, #addr_province_id, #addr_municipality_id, #addr_barangay_id").empty().append('<option value="">Select ...</option>');
                     $.each(data.regions, function (index, value) {
-                        $("#addr_region_id").append('<option value="' + value.region_code + '">' + value.region_description + "</option>");
+                        selected = '';
+                        if (value.region_code == region) {
+                            selected = 'selected';
+                        }
+
+                        $("#addr_region_id").append('<option value="' + value.region_code + '" '+selected+'>' + value.region_description + "</option>");
                     });
+
+                    $("#addr_region_id").trigger('change').attr('disabled','disabled');
                 },
             });
         }

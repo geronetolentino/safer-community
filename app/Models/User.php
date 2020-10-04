@@ -18,12 +18,13 @@ class User extends Authenticatable implements MustVerifyEmail
      * @var array
      */
     protected $fillable = [
+        'uid',
         'type',
-        'username', 
         'name', 
-        'email', 
+        'birthdate', 
+        'gender', 
+        'phone_number', 
         'password',
-        'territory',
         'address',
         'addr_barangay_id',
         'addr_municipality_id',
@@ -60,15 +61,8 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->belongsTo('App\Models\UserInfo','id','user_id');
     }
 
-    public function documents()
-    {
-        return $this->hasMany('App\Models\UserDocument','id','user_id');
-    }
-
     public function healthData()
     {
-        //return $this->hasOne('App\Models\HealthData');
-
         return $this->hasOneThrough(
             'App\Models\HealthData',
             'App\Models\UserInfo',
@@ -77,23 +71,6 @@ class User extends Authenticatable implements MustVerifyEmail
             'id', 
             'poi_id' 
         )->orderBy('id', 'desc');
-    }
-   
-    public function establishmentLog()
-    {
-        return $this->hasManyThrough(
-            'App\Models\EstablishmentVisitorLog',
-            'App\Models\UserInfo',
-            'user_id', 
-            'poi_id', 
-            'id', 
-            'poi_id' 
-        )->orderBy('id', 'desc');
-    }
-
-    public function establishment()
-    {
-        return $this->hasOne('App\Models\Establishment','user_id','id');
     }
 
     public function hospital()
@@ -113,11 +90,6 @@ class User extends Authenticatable implements MustVerifyEmail
         );
     }
 
-    public function employeer()
-    {
-        return $this->hasOne('App\Models\EstablishmentEmployee','user_id','id');
-    }
-
     public function notifications()
     {
         return $this->hasMany('App\Models\Notification','user_id','id')->orderBy('id', 'DESC');
@@ -125,32 +97,32 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function barangay()
     {
-        return $this->belongsTo('App\Models\AddrBarangay','addr_barangay_id','barangay_code');
+        return $this->belongsTo('App\Models\PhilippineBarangay','addr_barangay_id','barangay_code');
     }
 
     public function municipality()
     {
-        return $this->belongsTo('App\Models\AddrMunicipality','addr_municipality_id','city_municipality_code');
+        return $this->belongsTo('App\Models\PhilippineCity','addr_municipality_id','city_municipality_code');
     }
 
     public function province()
     {
-        return $this->belongsTo('App\Models\AddrProvince','addr_province_id','province_code');
+        return $this->belongsTo('App\Models\PhilippineProvince','addr_province_id','province_code');
     }
 
     public function region()
     {
-        return $this->belongsTo('App\Models\AddrRegion','addr_region_id','region_code');
+        return $this->belongsTo('App\Models\PhilippineRegion','addr_region_id','region_code');
     }
 
     public function scopeResidents($query)
     {
-        return $query->where('type', 4);
+        return $query->where('type', 'resident');
     }
 
     public function scopeResidentOf($query, $param)
     {
-        return $query->where($param[0], $param[1])->where('type', 4);
+        return $query->where($param[0], $param[1])->where('type', 'resident');
     }
 
     public function getFullAddressAttribute(): string

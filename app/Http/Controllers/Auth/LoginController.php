@@ -29,9 +29,9 @@ class LoginController extends Controller
      */
     protected $redirectTo = RouteServiceProvider::HOME;
 
-    public function username()
+    public function phone_number()
     {
-        return 'username'; //or whatever field
+        return 'phone_number'; //or whatever field
     }
 
     /**
@@ -52,13 +52,11 @@ class LoginController extends Controller
             'username' => 'required',
             'password' => 'required',
         ]);
-  
-        $fieldType = filter_var($request->username, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
 
-        if (auth()->attempt(array($fieldType => $input['username'], 'password' => $input['password']))) {
+        if (auth()->attempt(array('phone_number' => $input['username'], 'password' => $input['password']))) {
             return redirect()->route('home');
         } else {
-            return redirect()->route('login')->withErrors(['username'=>'Username / Email address or Password is incorrect.']);
+            return redirect()->route('login')->withErrors(['username'=>'Phone number or Password is incorrect.']);
         }
     }
 }

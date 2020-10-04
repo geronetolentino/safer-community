@@ -153,10 +153,10 @@
 /* Custom Alerts */
 /* Default */
 .custom-alert-1 {
-  background-color: #db7178;
-  border-color: #db7178;
+  background-color: #c2d5ff;
+  border-color: #1b55e2;
   border-radius: 5px;
-  color: #fff; }
+  color: #1b55e2; }
   .custom-alert-1 .alert-icon {
     margin-right: 25px; }
   .custom-alert-1 .media-body {

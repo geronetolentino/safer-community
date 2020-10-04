@@ -109,8 +109,6 @@
         <div id="content" class="main-content">
             <div class="layout-px-spacing">
 
-                @include('alerts')
-
                 @yield('content')
 
             </div>
@@ -118,9 +116,6 @@
                 <div class="footer-section f-section-1">
                     <p class="">
                         &copy; 2020 All Rights Reserved. 
-                        <a href="https://www.tmdcitsolutions.com/" target="blank">TMDC IT Solutions</a> | 
-                        <a href="https://bnshosting.net/" target="blank">Bitstop Network Services</a> | 
-                        <a href="{{ route('privacy-policy') }}" class="text-primary" target="blank">Privacy Policy</a>
                     </p>
                 </div>
                 <div class="footer-section f-section-2">

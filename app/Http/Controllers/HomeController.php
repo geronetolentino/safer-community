@@ -21,41 +21,19 @@ class HomeController extends Controller
     public function checkpoint($controller)
     {
 
-        if (Auth::user()->type == 0) {
-
-            $to = 'wa'.$controller;
-
-        } elseif (Auth::user()->type == 1) {
-
-            $to = 'pa'.$controller;
-
-        } elseif (Auth::user()->type == 2) {
-
-            $to = 'ma'.$controller;
-
-        } elseif (Auth::user()->type == 3){
-
-            $to = 'br'.$controller;
-
-        } elseif (Auth::user()->type == 4){
+        if (Auth::user()->type == 'resident') {
 
             $to = 'rs'.$controller;
 
-        } elseif (Auth::user()->type == 5){
+        } elseif (Auth::user()->type == 'lgu') {
 
-            $to = 'hp'.$controller;
+            $to = 'lgu'.$controller;
 
-        }
-        elseif (Auth::user()->type == 6){
+        } elseif (Auth::user()->type == 'hci') {
 
-            $to = 'es'.$controller;
+            $to = 'hci'.$controller;
 
-        }
-        elseif (Auth::user()->type == 7){
-
-            $to = 'tr'.$controller;
-
-        }
+        } 
 
         return redirect()->route($to);
     }

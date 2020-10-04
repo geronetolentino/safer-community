@@ -8,7 +8,7 @@
                     </a>
                 </li>
                 <li class="nav-item theme-text">
-                    <a href="{{ route('home') }}" class="nav-link">{{ env('APP_NAME') }} <small> | {{ Auth::user()->uType->code }} [ {{ Auth::user()->fullAddress }} ]</small> </a>
+                    <a href="{{ route('home') }}" class="nav-link">{{ env('APP_NAME') }} <small> | {{ strtoupper(Auth::user()->type) }} [ {{ Auth::user()->fullAddress }} ]</small> </a>
                 </li>
             </ul>
 
@@ -40,7 +40,6 @@
 
                 <li class="nav-item dropdown user-profile-dropdown">
                     <a href="javascript:void(0);" class="nav-link dropdown-toggle user" id="userProfileDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                        <img src="{{ route('image.process',['filename'=>Auth::user()->info->profile_photo]) }}" alt="{{ Auth::user()->name }} ">
                         {{ Auth::user()->name }} 
                     </a>
                     <div class="dropdown-menu position-absolute" aria-labelledby="userProfileDropdown">

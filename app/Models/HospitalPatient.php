@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Model;
 
 class HospitalPatient extends Model
@@ -12,7 +13,9 @@ class HospitalPatient extends Model
         'poi_id',
         'admit_date',
         'discharge_date',
+        'discharge_request',
         'patient_status',
+        'hci_locked',
     ]; 
 
     public function resident()
@@ -20,9 +23,14 @@ class HospitalPatient extends Model
         return $this->belongsTo('App\Models\UserInfo','poi_id','poi_id');
     }
 
+    public function scopeMyPatients($query)
+    {
+        return $query->where('hospital_id', Auth::user()->id);
+    }
+
     public function scopeFindByPoi($query, string $id)
     {
-        return $query->where('poi_id', $id)->first();
+        return $query->where('poi_id', $id);
     }
 
     public function scopeStatus($query, string $id)

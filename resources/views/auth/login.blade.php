@@ -6,7 +6,7 @@
             <div class="form-form-wrap">
                 <div class="form-container">
                     <div class="form-content">
-                        <h1 class="">Log In to <a href=""><span class="brand-name">I Am Safe</span></a></h1>
+                        <h1><a><span class="brand-name">{{ env('APP_NAME') }}</span></a></h1>
                         <p class="signup-link">
                             <span>New Here? <a href="{{ route('register') }}">Create an account</a></span>
                             <br>
